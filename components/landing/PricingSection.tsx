@@ -1,0 +1,150 @@
+import { Check } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
+
+export async function PricingSection() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    let planId = null
+    if (user) {
+        const { data } = await supabase.from('profiles').select('plan_id').eq('id', user.id).single()
+        planId = data?.plan_id
+    }
+
+    const getButtonProps = (cardPlan: string, defaultText: string) => {
+        if (!user) {
+            return {
+                text: defaultText,
+                disabled: false,
+                href: cardPlan === 'hitchhiker' ? '/login?tab=signup' : '/login'
+            }
+        }
+
+        const planWeights: Record<string, number> = {
+            'hitchhiker': 0,
+            'explorer': 1,
+            'commander': 2,
+            'lifetime_friend': 3
+        }
+
+        const currentWeight = planId ? planWeights[planId] : 0
+        const cardWeight = planWeights[cardPlan]
+
+        if (planId === cardPlan) {
+            return { text: 'Current Plan', disabled: true, href: '#' }
+        } else if (cardWeight > currentWeight) {
+            return { text: 'Upgrade', disabled: false, href: '/settings/profile' }
+        } else {
+            return { text: 'Downgrade', disabled: false, href: '/settings/profile' }
+        }
+    }
+
+    const hitchhikerProps = getButtonProps('hitchhiker', 'Start for free')
+    const explorerProps = getButtonProps('explorer', 'Select Plan')
+    const commanderProps = getButtonProps('commander', 'Select Plan')
+
+    const renderButton = (props: any, baseClasses: string) => {
+        if (props.disabled) {
+            return (
+                <button disabled className={`${baseClasses} opacity-50 cursor-not-allowed`}>
+                    {props.text}
+                </button>
+            )
+        }
+        return (
+            <Link href={props.href} className={`${baseClasses} flex items-center justify-center text-center`}>
+                {props.text}
+            </Link>
+        )
+    }
+
+    return (
+        <section className="relative z-10 py-24 px-4 bg-transparent border-t border-white/5 mt-12 backdrop-blur-sm">
+
+            <div className="max-w-7xl mx-auto text-center">
+                <h2 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 drop-shadow-sm mb-4">
+                    Transparent Pricing
+                </h2>
+                <p className="text-blue-100/60 max-w-2xl mx-auto mb-16 text-lg">
+                    Simple, straightforward pricing to keep your UI multiverse running smoothly.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
+
+                    {/* Free Plan */}
+                    <div className="flex flex-col p-8 bg-white/[0.02] border border-white/10 rounded-3xl backdrop-blur-md relative overflow-hidden group hover:border-white/20 transition-colors mt-4 md:mt-0">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span className="text-6xl font-black italic">00</span>
+                        </div>
+                        <h3 className="text-xl font-semibold text-white text-left mb-2">Hitchhiker</h3>
+                        <p className="text-white/50 text-left text-sm mb-6">Ideal for testing the orbit and discovering the platform.</p>
+
+                        <div className="flex items-baseline gap-2 mb-8">
+                            <span className="text-5xl font-bold text-white">0€</span>
+                            <span className="text-white/50">/ month</span>
+                        </div>
+
+                        <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Up to 15 components</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Basic Omnibar search</li>
+                        </ul>
+
+                        {renderButton(hitchhikerProps, "w-full mt-auto py-3 px-4 rounded-xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors")}
+                    </div>
+
+                    {/* 1 Month Plan */}
+                    <div className="flex flex-col p-8 bg-white/[0.02] border border-white/10 rounded-3xl backdrop-blur-md relative overflow-hidden group hover:border-indigo-500/30 transition-colors mt-4 md:mt-0">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span className="text-6xl font-black italic">01</span>
+                        </div>
+                        <h3 className="text-xl font-semibold text-white text-left mb-2">Explorer Pass</h3>
+                        <p className="text-white/50 text-left text-sm mb-6">Perfect for short-term missions and prototypes.</p>
+
+                        <div className="flex items-baseline gap-2 mb-8">
+                            <span className="text-5xl font-bold text-white">4.99€</span>
+                            <span className="text-white/50">/ 1 month</span>
+                        </div>
+
+                        <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Unlimited Components</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Generous Cloud Storage (500MB)</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Omnibar Search</li>
+                        </ul>
+
+                        {renderButton(explorerProps, "w-full mt-auto py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors")}
+                    </div>
+
+                    {/* 3 Months Plan (Highlighted) */}
+                    <div className="flex flex-col p-8 bg-gradient-to-b from-indigo-500/10 to-transparent border border-indigo-500/30 rounded-3xl backdrop-blur-md relative overflow-hidden group md:-mt-4 md:mb-4">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                            <span className="text-6xl font-black italic text-indigo-300">03</span>
+                        </div>
+
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 py-1 px-3 bg-indigo-500/20 border border-indigo-500/30 rounded-b-lg text-xs font-semibold text-indigo-300">
+                            BEST VALUE
+                        </div>
+
+                        <h3 className="text-xl font-semibold text-white text-left mb-2 mt-4">Commander License</h3>
+                        <p className="text-white/50 text-left text-sm mb-6">The ideal setup for establishing your UI orbit.</p>
+
+                        <div className="flex items-baseline gap-2 mb-8">
+                            <span className="text-5xl font-bold text-white">11.99€</span>
+                            <span className="text-white/50">/ 3 months</span>
+                        </div>
+
+                        <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Everything in Explorer</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Massive 2GB Cloud Storage</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Priority Support</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Custom Editor Themes</li>
+                        </ul>
+
+                        {renderButton(commanderProps, "w-full mt-auto py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all hover:shadow-[0_0_20px_-5px_rgba(99,102,241,0.5)]")}
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    )
+}

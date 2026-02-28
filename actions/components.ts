@@ -20,6 +20,27 @@ export async function createComponent(formData: FormData) {
     let preview_image_1_url = null
     let preview_image_2_url = null
 
+    // Freemium Paywall Logic Check
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, plan_id')
+        .eq('id', user.id)
+        .single()
+
+    const role = profile?.role || 'user'
+    const plan = profile?.plan_id || 'hitchhiker'
+
+    if (role !== 'admin' && plan === 'hitchhiker') {
+        const { count, error: countError } = await supabase
+            .from('components')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+
+        if (!countError && count !== null && count >= 15) {
+            return { error: 'PAYWALL_LIMIT_REACHED' }
+        }
+    }
+
     const image1 = formData.get('image1') as File | null
     const image2 = formData.get('image2') as File | null
 

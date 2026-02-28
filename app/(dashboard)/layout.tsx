@@ -11,11 +11,17 @@ export default async function DashboardLayout({
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
+    let profile = null
+    if (user) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+        profile = data
+    }
+
     const components = await getComponents()
     const tags = await getTags()
 
     return (
-        <LayoutShell omnibarProps={{ components, tags }} user={user}>
+        <LayoutShell omnibarProps={{ components, tags }} user={user} profile={profile}>
             {children}
         </LayoutShell>
     )

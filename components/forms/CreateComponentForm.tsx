@@ -6,6 +6,7 @@ import { compressToWebP } from '@/lib/image-compression'
 import { createComponent } from '@/actions/components'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { PaywallModal } from '@/components/ui/PaywallModal'
 
 interface CreateComponentFormProps {
     onSuccess?: () => void
@@ -15,6 +16,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [isPaywallOpen, setIsPaywallOpen] = useState(false)
 
     const [image1, setImage1] = useState<File | null>(null)
     const [image2, setImage2] = useState<File | null>(null)
@@ -101,7 +103,11 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
             const result = await createComponent(formData)
 
             if (result && result.error) {
-                setError(result.error)
+                if (result.error === 'PAYWALL_LIMIT_REACHED') {
+                    setIsPaywallOpen(true)
+                } else {
+                    setError(result.error)
+                }
                 setIsSubmitting(false)
                 return
             }
@@ -115,104 +121,108 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-                <div className="p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20 rounded-md">
-                    {error}
-                </div>
-            )}
-
-            <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Image Principale (ex: Light Mode)</label>
-                    <ImageDropzone
-                        preview={image1Preview}
-                        onDrop={(e) => handleImageDrop(e, 1)}
-                        onSelect={(e) => handleImageSelect(e, 1)}
-                        onRemove={() => removeImage(1)}
-                        id="image1"
-                    />
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Image Secondaire (ex: Dark Mode)</label>
-                    <ImageDropzone
-                        preview={image2Preview}
-                        onDrop={(e) => handleImageDrop(e, 2)}
-                        onSelect={(e) => handleImageSelect(e, 2)}
-                        onRemove={() => removeImage(2)}
-                        id="image2"
-                    />
-                </div>
-            </div>
-
-            <div className="space-y-2">
-                <label htmlFor="title" className="text-sm font-medium">Titre du composant</label>
-                <input
-                    id="title"
-                    name="title"
-                    required
-                    placeholder="Ex: Primary Button Glow"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                />
-            </div>
-
-            <div className="space-y-2">
-                <label htmlFor="description" className="text-sm font-medium">Description (Optionnel)</label>
-                <textarea
-                    id="description"
-                    name="description"
-                    placeholder="Brève description de l'utilité ou des dépendances..."
-                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                />
-            </div>
-
-            <div className="space-y-2">
-                <label className="text-sm font-medium">Tags</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                    {tags.map(tag => (
-                        <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs font-medium">
-                            {tag}
-                            <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive transition-colors">
-                                <X className="w-3 h-3" />
-                            </button>
-                        </span>
-                    ))}
-                </div>
-                <input
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyDown={handleTagKeyDown}
-                    placeholder="Appuyez sur Entrée pour ajouter un tag (ex: gsapt, hero, tailwind)"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                />
-            </div>
-
-            <div className="space-y-2">
-                <label htmlFor="code_snippet" className="text-sm font-medium">Code (React/JSX/JS/CSS)</label>
-                <textarea
-                    id="code_snippet"
-                    name="code_snippet"
-                    required
-                    placeholder="..."
-                    className="flex min-h-[200px] w-full rounded-md border border-input bg-muted/30 font-mono px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                />
-            </div>
-
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 hover:bg-primary/90 transition-colors disabled:pointer-events-none disabled:opacity-50"
-            >
-                {isSubmitting ? (
-                    <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sauvegarde et compression...
-                    </>
-                ) : (
-                    'Sauvegarder le composant'
+        <>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                    <div className="p-3 text-sm bg-destructive/10 text-destructive border border-destructive/20 rounded-md">
+                        {error}
+                    </div>
                 )}
-            </button>
-        </form>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Image Principale (ex: Light Mode)</label>
+                        <ImageDropzone
+                            preview={image1Preview}
+                            onDrop={(e) => handleImageDrop(e, 1)}
+                            onSelect={(e) => handleImageSelect(e, 1)}
+                            onRemove={() => removeImage(1)}
+                            id="image1"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Image Secondaire (ex: Dark Mode)</label>
+                        <ImageDropzone
+                            preview={image2Preview}
+                            onDrop={(e) => handleImageDrop(e, 2)}
+                            onSelect={(e) => handleImageSelect(e, 2)}
+                            onRemove={() => removeImage(2)}
+                            id="image2"
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="title" className="text-sm font-medium">Titre du composant</label>
+                    <input
+                        id="title"
+                        name="title"
+                        required
+                        placeholder="Ex: Primary Button Glow"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="description" className="text-sm font-medium">Description (Optionnel)</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Brève description de l'utilité ou des dépendances..."
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium">Tags</label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                        {tags.map(tag => (
+                            <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs font-medium">
+                                {tag}
+                                <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive transition-colors">
+                                    <X className="w-3 h-3" />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
+                    <input
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={handleTagKeyDown}
+                        placeholder="Appuyez sur Entrée pour ajouter un tag (ex: gsapt, hero, tailwind)"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label htmlFor="code_snippet" className="text-sm font-medium">Code (React/JSX/JS/CSS)</label>
+                    <textarea
+                        id="code_snippet"
+                        name="code_snippet"
+                        required
+                        placeholder="..."
+                        className="flex min-h-[200px] w-full rounded-md border border-input bg-muted/30 font-mono px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 hover:bg-primary/90 transition-colors disabled:pointer-events-none disabled:opacity-50"
+                >
+                    {isSubmitting ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sauvegarde et compression...
+                        </>
+                    ) : (
+                        'Sauvegarder le composant'
+                    )}
+                </button>
+            </form>
+
+            <PaywallModal isOpen={isPaywallOpen} onClose={() => setIsPaywallOpen(false)} />
+        </>
     )
 }
 

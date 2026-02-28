@@ -9,11 +9,11 @@ export async function updatePassword(prevState: any, formData: FormData) {
     const confirmPassword = formData.get('confirmPassword') as string
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-        return { error: 'Veuillez remplir tous les champs.' }
+        return { error: 'Please fill in all fields.' }
     }
 
     if (newPassword !== confirmPassword) {
-        return { error: 'Les nouveaux mots de passe ne correspondent pas.' }
+        return { error: 'New passwords do not match.' }
     }
 
     const supabase = await createClient()
@@ -21,7 +21,7 @@ export async function updatePassword(prevState: any, formData: FormData) {
     // 1. Verify old password by attempting a quick sign-in using the current session email
     const { data: { user } } = await supabase.auth.getUser()
     if (!user || !user.email) {
-        return { error: 'Utilisateur non authentifié.' }
+        return { error: 'User not authenticated.' }
     }
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -30,7 +30,7 @@ export async function updatePassword(prevState: any, formData: FormData) {
     })
 
     if (signInError) {
-        return { error: 'L\'ancien mot de passe est incorrect.' }
+        return { error: 'The current password is incorrect.' }
     }
 
     // 2. Update user password
@@ -43,5 +43,45 @@ export async function updatePassword(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/settings/profile')
-    return { success: 'Votre mot de passe a bien été mis à jour.' }
+    return { success: 'Your password has been successfully updated.' }
+}
+
+export async function updateEditorTheme(prevState: any, formData: FormData) {
+    const theme = formData.get('theme') as string
+
+    if (!theme) {
+        return { error: 'No theme selected.' }
+    }
+
+    const supabase = await createClient()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+        return { error: 'User not authenticated.' }
+    }
+
+    // Verify Premium Status
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('role, plan_id')
+        .eq('id', user.id)
+        .single()
+
+    const role = profile?.role || 'user'
+    const plan = profile?.plan_id || 'hitchhiker'
+
+    if (role !== 'admin' && plan !== 'commander' && plan !== 'lifetime_friend') {
+        return { error: 'This feature is reserved for Commander plans and above.' }
+    }
+
+    const { error } = await supabase.rpc('update_editor_theme', {
+        new_theme: theme
+    })
+
+    if (error) {
+        return { error: "Error updating theme." }
+    }
+
+    revalidatePath('/', 'layout')
+    return { success: 'Editor theme updated successfully.', themeUpdated: true }
 }

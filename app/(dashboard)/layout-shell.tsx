@@ -5,7 +5,7 @@ import * as React from 'react'
 import { CreateComponentModal } from '@/components/CreateComponentModal'
 import { UserNav } from '@/components/UserNav'
 
-export function LayoutShell({ children, omnibarProps, user }: { children: React.ReactNode, omnibarProps: { components: any[], tags: any[] }, user: any }) {
+export function LayoutShell({ children, omnibarProps, user, profile }: { children: React.ReactNode, omnibarProps: { components: any[], tags: any[] }, user: any, profile?: any }) {
     const { Omnibar } = require('@/components/Omnibar')
 
     return (
@@ -20,7 +20,7 @@ export function LayoutShell({ children, omnibarProps, user }: { children: React.
                 <div className="flex items-center gap-4">
                     <Omnibar {...omnibarProps} />
                     <CreateComponentModal />
-                    <UserNav user={user} />
+                    <UserNav user={user} profile={profile} />
                 </div>
             </header>
             <main className="flex-1 p-4 md:p-8">

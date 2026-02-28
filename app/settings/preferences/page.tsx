@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
-import { ProfileForm } from '@/components/forms/ProfileForm'
+import { PreferencesForm } from '@/components/forms/PreferencesForm'
 import { redirect } from 'next/navigation'
 
-export default async function SettingsProfilePage() {
+export default async function SettingsPreferencesPage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -16,5 +16,5 @@ export default async function SettingsProfilePage() {
         profile = data
     }
 
-    return <ProfileForm user={user} profile={profile} />
+    return <PreferencesForm profile={profile} />
 }

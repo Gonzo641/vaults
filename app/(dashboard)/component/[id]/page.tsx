@@ -33,9 +33,24 @@ export default async function ComponentDetailsPage({
         notFound()
     }
 
+    const { data: { user } } = await supabase.auth.getUser()
+    let editorTheme = 'github-dark'
+
+    if (user) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('editor_theme')
+            .eq('id', user.id)
+            .single()
+
+        if (profile?.editor_theme) {
+            editorTheme = profile.editor_theme
+        }
+    }
+
     const highlightedCode = await codeToHtml(component.code_snippet, {
         lang: 'tsx',
-        theme: 'tokyo-night'
+        theme: editorTheme as any
     })
 
     return (

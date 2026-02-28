@@ -7,6 +7,20 @@ import { CreateComponentForm } from '@/components/forms/CreateComponentForm'
 
 export function CreateComponentModal() {
     const [open, setOpen] = React.useState(false)
+    const [isMounted, setIsMounted] = React.useState(false)
+
+    React.useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) {
+        return (
+            <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline">Add Component</span>
+            </button>
+        )
+    }
 
     return (
         <Dialog.Root open={open} onOpenChange={setOpen}>
