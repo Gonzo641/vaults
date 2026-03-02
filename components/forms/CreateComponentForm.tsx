@@ -57,7 +57,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
             }
         } catch (err) {
             console.error('Error compressing image:', err)
-            setError('Erreur lors de la compression de l\'image.')
+            setError('Error compressing image.')
         }
     }
 
@@ -115,7 +115,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
             router.refresh()
             if (onSuccess) onSuccess()
         } catch (err: any) {
-            setError(err.message || 'Une erreur est survenue.')
+            setError(err.message || 'An unexpected error occurred.')
             setIsSubmitting(false)
         }
     }
@@ -131,7 +131,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
 
                 <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Image Principale (ex: Light Mode)</label>
+                        <label className="text-sm font-medium">Primary Image (e.g., Light Mode)</label>
                         <ImageDropzone
                             preview={image1Preview}
                             onDrop={(e) => handleImageDrop(e, 1)}
@@ -141,7 +141,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Image Secondaire (ex: Dark Mode)</label>
+                        <label className="text-sm font-medium">Secondary Image (e.g., Dark Mode)</label>
                         <ImageDropzone
                             preview={image2Preview}
                             onDrop={(e) => handleImageDrop(e, 2)}
@@ -153,7 +153,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label htmlFor="title" className="text-sm font-medium">Titre du composant</label>
+                    <label htmlFor="title" className="text-sm font-medium">Component Title *</label>
                     <input
                         id="title"
                         name="title"
@@ -164,11 +164,11 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label htmlFor="description" className="text-sm font-medium">Description (Optionnel)</label>
+                    <label htmlFor="description" className="text-sm font-medium">Description (Optional)</label>
                     <textarea
                         id="description"
                         name="description"
-                        placeholder="Brève description de l'utilité ou des dépendances..."
+                        placeholder="Brief description of utility or dependencies..."
                         className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
                     />
                 </div>
@@ -189,7 +189,7 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                         value={tagInput}
                         onChange={(e) => setTagInput(e.target.value)}
                         onKeyDown={handleTagKeyDown}
-                        placeholder="Appuyez sur Entrée pour ajouter un tag (ex: gsapt, hero, tailwind)"
+                        placeholder="Press Enter to add a tag (e.g., gsap, tailwind)"
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
@@ -213,10 +213,10 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                     {isSubmitting ? (
                         <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Sauvegarde et compression...
+                            Saving and compressing...
                         </>
                     ) : (
-                        'Sauvegarder le composant'
+                        'Save Component'
                     )}
                 </button>
             </form>
@@ -280,9 +280,8 @@ function ImageDropzone({
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-3">
                         <Upload className="w-5 h-5 text-muted-foreground" />
                     </div>
-                    <p className="text-sm font-medium mb-1">Glissez une image ici</p>
-                    <p className="text-xs text-muted-foreground">ou cliquez pour parcourir</p>
-                    <p className="text-[10px] text-muted-foreground mt-2 bg-muted px-2 py-1 rounded">Sera compressé en WebP (&lt;500Ko)</p>
+                    <p className="text-sm font-medium mb-1">Drag image here</p>
+                    <p className="text-xs text-muted-foreground">or click to browse</p>
                 </>
             )}
         </div>

@@ -1,9 +1,24 @@
 'use client'
 
-import { CreditCard, ArrowRight } from 'lucide-react'
+import { CreditCard, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useTransition } from 'react'
+import { createCustomerPortalSession } from '@/actions/stripe'
+import { toast } from 'sonner'
 
 export function ProfileForm({ user, profile }: { user: any, profile?: any }) {
+    const [isPending, startTransition] = useTransition()
+
+    const handleManageSubscription = () => {
+        startTransition(async () => {
+            try {
+                const { url } = await createCustomerPortalSession()
+                window.location.assign(url)
+            } catch (error: any) {
+                toast.error(error.message || "Impossible de charger le portail de gestion.")
+            }
+        })
+    }
     return (
         <div className="space-y-8">
             <div>
@@ -53,13 +68,33 @@ export function ProfileForm({ user, profile }: { user: any, profile?: any }) {
                             </p>
                         </div>
 
-                        <Link
-                            href="/pricing"
-                            className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-indigo-600 text-white h-10 px-4 py-2 hover:bg-indigo-500 transition-all hover:scale-[1.02] shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
-                        >
-                            Manage Subscription / Upgrade
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                        </Link>
+                        {profile?.stripe_customer_id ? (
+                            <button
+                                onClick={handleManageSubscription}
+                                disabled={isPending}
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-indigo-600 text-white h-10 px-4 py-2 hover:bg-indigo-500 transition-all hover:scale-[1.02] shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            >
+                                {isPending ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Connecting to Stripe...
+                                    </>
+                                ) : (
+                                    <>
+                                        Manage Billing Portal
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </>
+                                )}
+                            </button>
+                        ) : (
+                            <Link
+                                href="/pricing"
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-indigo-600 text-white h-10 px-4 py-2 hover:bg-indigo-500 transition-all hover:scale-[1.02] shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+                            >
+                                Upgrade your Vault
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

@@ -78,15 +78,14 @@ export function UserNav({ user, profile }: UserNavProps) {
                     <DropdownMenu.Separator className="-mx-1 my-1 h-px bg-border" />
 
                     <DropdownMenu.Item
-                        asChild
-                        className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-destructive/10 focus:text-destructive data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-destructive"
+                        className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-destructive/10 focus:text-destructive data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-destructive cursor-pointer"
+                        onSelect={(e) => {
+                            e.preventDefault()
+                            signOut()
+                        }}
                     >
-                        <form action={signOut} className="w-full">
-                            <button type="submit" className="flex items-center w-full">
-                                <LogOut className="mr-2 h-4 w-4" />
-                                <span>Log out</span>
-                            </button>
-                        </form>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
                     </DropdownMenu.Item>
                 </DropdownMenu.Content>
             </DropdownMenu.Portal>

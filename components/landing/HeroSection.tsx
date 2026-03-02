@@ -4,8 +4,9 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Rocket, ArrowRight, ShieldCheck, Zap, Layers } from 'lucide-react'
 import { gsap } from 'gsap'
+import { CosmicJourney } from '@/components/landing/CosmicJourney'
 
-export function HeroSection() {
+export function HeroSection({ isLoggedIn }: { isLoggedIn?: boolean }) {
     const containerRef = useRef<HTMLDivElement>(null)
     const titleRef = useRef<HTMLHeadingElement>(null)
     const subtitleRef = useRef<HTMLParagraphElement>(null)
@@ -70,31 +71,30 @@ export function HeroSection() {
             </h1>
 
             <p ref={subtitleRef} className="mt-6 text-lg md:text-xl text-blue-100/70 max-w-2xl font-light">
-                The ultimate vault to store, organize, and retrieve your React components. Featuring drag-and-drop uploads, automatic WebP compression, and stellar organization.
+                The ultimate vault to store, organize, and retrieve your components and AI prompts. Featuring drag-and-drop uploads and stellar organization.
             </p>
 
             <div ref={buttonsRef} className="mt-10 flex flex-col sm:flex-row gap-4 items-center">
-                <Link href="/login?tab=signup" className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-white transition-all bg-indigo-600 rounded-full hover:bg-indigo-500 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
-                    <Rocket className="w-4 h-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-                    Launch your Vault
-                </Link>
-                <Link href="/login" className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-medium text-white transition-all bg-white/5 border border-white/10 rounded-full hover:bg-white/10 backdrop-blur-sm">
-                    Access Terminal <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+                {isLoggedIn ? (
+                    <Link href="/dashboard" className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-white transition-all bg-indigo-600 rounded-full hover:bg-indigo-500 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                        <Rocket className="w-4 h-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                        Go to Dashboard
+                    </Link>
+                ) : (
+                    <>
+                        <Link href="/login?tab=signup" className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-white transition-all bg-indigo-600 rounded-full hover:bg-indigo-500 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                            <Rocket className="w-4 h-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                            Start for free
+                        </Link>
+                        <Link href="/pricing" className="group inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-medium text-white transition-all bg-white/5 border border-white/10 rounded-full hover:bg-white/10 backdrop-blur-sm">
+                            View Pricing <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                        </Link>
+                    </>
+                )}
             </div>
 
-            {/* Video Placeholder */}
-            <div className="mt-16 sm:mt-20 w-full max-w-4xl mx-auto flex flex-col items-center group perspective-1000 z-20">
-                <p className="text-sm font-medium tracking-widest text-indigo-300 uppercase mb-4 opacity-80 group-hover:opacity-100 transition-opacity">
-                    See the Omnibar in action
-                </p>
-                <div className="w-full aspect-video rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-md shadow-[0_0_50px_-15px_rgba(99,102,241,0.3)] group-hover:shadow-[0_0_80px_-20px_rgba(99,102,241,0.5)] flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:border-indigo-500/40">
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10 opacity-50 group-hover:opacity-100 transition-opacity" />
-                    <div className="w-16 h-16 rounded-full bg-indigo-600/80 group-hover:bg-indigo-500 flex items-center justify-center cursor-pointer shadow-[0_0_30px_rgba(99,102,241,0.8)] backdrop-blur-sm transition-all group-hover:scale-110 relative z-10">
-                        <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1" />
-                    </div>
-                </div>
-            </div>
+            {/* Features Timeline (replaces old Video Placeholder) */}
+            <CosmicJourney />
 
             {/* Zero-Gravity Feature Cards */}
             <div ref={cardsRef} className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl w-full perspective-1000 items-stretch">

@@ -1,6 +1,7 @@
 import { Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { CheckoutButton } from './CheckoutButton'
 
 export async function PricingSection() {
     const supabase = await createClient()
@@ -31,11 +32,18 @@ export async function PricingSection() {
         const currentWeight = planId ? planWeights[planId] : 0
         const cardWeight = planWeights[cardPlan]
 
+        let priceId = undefined
+        if (cardPlan === 'explorer') priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_EXPLORER
+        if (cardPlan === 'commander') priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_COMMANDER
+        if (cardPlan === 'lifetime_friend') priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_LIFETIME
+
         if (planId === cardPlan) {
             return { text: 'Current Plan', disabled: true, href: '#' }
         } else if (cardWeight > currentWeight) {
-            return { text: 'Upgrade', disabled: false, href: '/settings/profile' }
+            // It's an upgrade: return the priceId so the CheckoutButton triggers Stripe
+            return { text: 'Upgrade to ' + cardPlan, disabled: false, priceId }
         } else {
+            // Downgrades are handled manually via portal or dashboard settings
             return { text: 'Downgrade', disabled: false, href: '/settings/profile' }
         }
     }
@@ -45,17 +53,14 @@ export async function PricingSection() {
     const commanderProps = getButtonProps('commander', 'Select Plan')
 
     const renderButton = (props: any, baseClasses: string) => {
-        if (props.disabled) {
-            return (
-                <button disabled className={`${baseClasses} opacity-50 cursor-not-allowed`}>
-                    {props.text}
-                </button>
-            )
-        }
         return (
-            <Link href={props.href} className={`${baseClasses} flex items-center justify-center text-center`}>
-                {props.text}
-            </Link>
+            <CheckoutButton
+                text={props.text}
+                href={props.href}
+                priceId={props.priceId}
+                disabled={props.disabled}
+                className={baseClasses}
+            />
         )
     }
 
@@ -63,8 +68,8 @@ export async function PricingSection() {
         <section className="relative z-10 py-24 px-4 bg-transparent border-t border-white/5 mt-12 backdrop-blur-sm">
 
             <div className="max-w-7xl mx-auto text-center">
-                <h2 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 drop-shadow-sm mb-4">
-                    Transparent Pricing
+                <h2 className="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 drop-shadow-sm mb-4 pb-2">
+                    Pricing
                 </h2>
                 <p className="text-blue-100/60 max-w-2xl mx-auto mb-16 text-lg">
                     Simple, straightforward pricing to keep your UI multiverse running smoothly.
