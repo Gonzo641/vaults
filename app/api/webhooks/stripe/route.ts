@@ -4,17 +4,27 @@ import { stripe } from '@/lib/stripe'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
-
 export async function POST(req: Request) {
     try {
-        const body = await req.text()
-        const signature = (await headers()).get('stripe-signature') as string
+        // Lire le secret dynamiquement et le nettoyer des espaces inutiles
+        const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET?.trim()
+        if (!webhookSecret) {
+            console.error('Webhook secret is missing.')
+            return NextResponse.json({ error: 'Missing webhook secret' }, { status: 400 })
+        }
+
+        // Récupérer le corps brut exact (en octets) pour contourner les erreurs d'encodage string
+        const arrayBuffer = await req.arrayBuffer()
+        const rawBody = Buffer.from(arrayBuffer)
+
+        const headersList = await headers()
+        const signature = headersList.get('stripe-signature') as string
 
         let event: Stripe.Event
 
         try {
-            event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+            // Passer le Buffer directement au SDK Stripe
+            event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret)
         } catch (err: any) {
             console.error(`Webhook signature verification failed.`, err.message)
             return NextResponse.json({ error: err.message }, { status: 400 })
