@@ -6,7 +6,7 @@ import { useTransition } from 'react'
 import { createCustomerPortalSession } from '@/actions/stripe'
 import { toast } from 'sonner'
 
-export function ProfileForm({ user, profile, subscriptionEnd }: { user: any, profile?: any, subscriptionEnd?: number | null }) {
+export function ProfileForm({ user, profile, subscriptionEnd, debugInfo }: { user: any, profile?: any, subscriptionEnd?: number | null, debugInfo?: string }) {
     const [isPending, startTransition] = useTransition()
 
     // Safely format the date on the client side
@@ -72,7 +72,7 @@ export function ProfileForm({ user, profile, subscriptionEnd }: { user: any, pro
                             <p className="text-xs text-muted-foreground font-mono">
                                 {profile?.plan_id === 'lifetime_friend' ? 'Lifetime Access (No renewal)' :
                                     profile?.plan_id === 'hitchhiker' || !profile?.plan_id ? 'Free Tier (No renewal)' :
-                                        formattedDate ? `Renewal on: ${formattedDate}` : 'Renewal date unavailable'}
+                                        formattedDate ? `Renewal on: ${formattedDate}` : `Renewal date unavailable ${debugInfo ? `(${debugInfo})` : ''}`}
                             </p>
                         </div>
 

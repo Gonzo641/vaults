@@ -13,6 +13,7 @@ export default async function SettingsProfilePage() {
 
     let profile = null
     let subscriptionEnd: number | null = null
+    let debugInfo: string = ""
 
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
     if (data) {
@@ -23,19 +24,24 @@ export default async function SettingsProfilePage() {
             try {
                 const subscriptions = await stripe.subscriptions.list({
                     customer: profile.stripe_customer_id,
-                    status: 'active',
+                    status: 'all',
                     limit: 1,
                 })
 
                 if (subscriptions.data.length > 0) {
                     const sub: any = subscriptions.data[0]
                     subscriptionEnd = sub.current_period_end || null
+                } else {
+                    debugInfo = `Empty subs array for customer: ${profile.stripe_customer_id}`
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Failed to fetch Stripe subscription data", err)
+                debugInfo = `API Error: ${err.message}`
             }
+        } else if (!profile.stripe_customer_id) {
+            debugInfo = "No stripe_customer_id in DB"
         }
     }
 
-    return <ProfileForm user={user} profile={profile} subscriptionEnd={subscriptionEnd} />
+    return <ProfileForm user={user} profile={profile} subscriptionEnd={subscriptionEnd} debugInfo={debugInfo} />
 }
