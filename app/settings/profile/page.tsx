@@ -3,6 +3,8 @@ import { ProfileForm } from '@/components/forms/ProfileForm'
 import { redirect } from 'next/navigation'
 import { stripe } from '@/lib/stripe'
 
+export const dynamic = 'force-dynamic'
+
 export default async function SettingsProfilePage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -31,6 +33,9 @@ export default async function SettingsProfilePage() {
                 if (subscriptions.data.length > 0) {
                     const sub: any = subscriptions.data[0]
                     subscriptionEnd = sub.current_period_end || null
+                    if (!subscriptionEnd) {
+                        debugInfo = `Missing period_end. KEYS: ${Object.keys(sub).join(', ')}`
+                    }
                 } else {
                     debugInfo = `Empty subs array for customer: ${profile.stripe_customer_id}`
                 }
