@@ -6,7 +6,7 @@ import { useTransition } from 'react'
 import { createCustomerPortalSession } from '@/actions/stripe'
 import { toast } from 'sonner'
 
-export function ProfileForm({ user, profile }: { user: any, profile?: any }) {
+export function ProfileForm({ user, profile, subscriptionDate }: { user: any, profile?: any, subscriptionDate?: string | null }) {
     const [isPending, startTransition] = useTransition()
 
     const handleManageSubscription = () => {
@@ -64,7 +64,9 @@ export function ProfileForm({ user, profile }: { user: any, profile?: any }) {
 
                         <div className="mb-6 p-3 rounded-md bg-black/20 border border-white/5">
                             <p className="text-xs text-muted-foreground font-mono">
-                                Renewal on: [Pending Stripe connection]
+                                {profile?.plan_id === 'lifetime_friend' ? 'Lifetime Access (No renewal)' :
+                                    profile?.plan_id === 'hitchhiker' || !profile?.plan_id ? 'Free Tier (No renewal)' :
+                                        subscriptionDate ? `Renewal on: ${subscriptionDate}` : 'Renewal date unavailable'}
                             </p>
                         </div>
 
