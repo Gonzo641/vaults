@@ -12,7 +12,7 @@ export default async function SettingsProfilePage() {
     }
 
     let profile = null
-    let subscriptionDate = null
+    let subscriptionEnd: number | null = null
 
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
     if (data) {
@@ -29,13 +29,7 @@ export default async function SettingsProfilePage() {
 
                 if (subscriptions.data.length > 0) {
                     const sub: any = subscriptions.data[0]
-                    const unixTimestamp = sub.current_period_end
-                    const date = new Date(unixTimestamp * 1000)
-                    subscriptionDate = date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    })
+                    subscriptionEnd = sub.current_period_end || null
                 }
             } catch (err) {
                 console.error("Failed to fetch Stripe subscription data", err)
@@ -43,5 +37,5 @@ export default async function SettingsProfilePage() {
         }
     }
 
-    return <ProfileForm user={user} profile={profile} subscriptionDate={subscriptionDate} />
+    return <ProfileForm user={user} profile={profile} subscriptionEnd={subscriptionEnd} />
 }
