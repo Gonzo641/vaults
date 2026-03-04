@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
 import { redirect } from 'next/navigation'
+import { getBaseUrl } from '@/lib/utils'
 
 export async function createCheckoutSession(priceId: string) {
     if (!priceId) {
@@ -19,7 +20,7 @@ export async function createCheckoutSession(priceId: string) {
         redirect('/login')
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const appUrl = getBaseUrl()
 
     try {
         // 2. Create the checkout session via Stripe SDK
@@ -80,7 +81,7 @@ export async function createCustomerPortalSession() {
         throw new Error("Aucun client Stripe n'est associé à ce compte.")
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const appUrl = getBaseUrl()
 
     try {
         // 3. Create the billing portal session
