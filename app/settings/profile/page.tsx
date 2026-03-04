@@ -32,7 +32,7 @@ export default async function SettingsProfilePage() {
 
                 if (subscriptions.data.length > 0) {
                     const sub: any = subscriptions.data[0]
-                    subscriptionEnd = sub.current_period_end || null
+                    subscriptionEnd = sub.items?.data?.[0]?.current_period_end || sub.current_period_end || null
                     if (!subscriptionEnd) {
                         debugInfo = `Missing period_end. KEYS: ${Object.keys(sub).join(', ')}`
                     }
