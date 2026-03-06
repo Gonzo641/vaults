@@ -13,7 +13,8 @@ export async function createComponent(formData: FormData) {
 
     const title = formData.get('title') as string
     const description = formData.get('description') as string
-    const code_snippet = formData.get('code_snippet') as string
+    const codeFilesStr = formData.get('code_files') as string
+    const code_files = codeFilesStr ? JSON.parse(codeFilesStr) : []
     const tagsStr = formData.get('tags') as string
     const tags = tagsStr ? (JSON.parse(tagsStr) as string[]) : []
 
@@ -92,7 +93,7 @@ export async function createComponent(formData: FormData) {
             user_id: user.id,
             title,
             description,
-            code_snippet,
+            code_files,
             preview_image_1_url,
             preview_image_2_url
         })
@@ -171,7 +172,8 @@ export async function updateComponent(id: string, formData: FormData) {
 
     const title = formData.get('title') as string
     const description = formData.get('description') as string
-    const code_snippet = formData.get('code_snippet') as string
+    const codeFilesStr = formData.get('code_files') as string
+    const code_files = codeFilesStr ? JSON.parse(codeFilesStr) : []
     const tagsStr = formData.get('tags') as string
     const tags = tagsStr ? (JSON.parse(tagsStr) as string[]) : []
 
@@ -184,7 +186,7 @@ export async function updateComponent(id: string, formData: FormData) {
     const updateData: any = {
         title,
         description,
-        code_snippet
+        code_files
     }
 
     // Fetch existing component to clean up old images

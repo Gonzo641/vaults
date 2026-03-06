@@ -7,6 +7,7 @@ import { createComponent } from '@/actions/components'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { PaywallModal } from '@/components/ui/PaywallModal'
+import { CodeFilesEditor } from '@/components/CodeFilesEditor'
 
 interface CreateComponentFormProps {
     onSuccess?: () => void
@@ -195,14 +196,9 @@ export function CreateComponentForm({ onSuccess }: CreateComponentFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <label htmlFor="code_snippet" className="text-sm font-medium">Code (React/JSX/JS/CSS)</label>
-                    <textarea
-                        id="code_snippet"
-                        name="code_snippet"
-                        required
-                        placeholder="..."
-                        className="flex min-h-[200px] w-full rounded-md border border-input bg-muted/30 font-mono px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                    />
+                    <label className="text-sm font-medium">Code Files</label>
+                    <p className="text-xs text-muted-foreground">Fill in at least one tab. The hidden input below is serialized automatically.</p>
+                    <CodeFilesEditor inputName="code_files" />
                 </div>
 
                 <button

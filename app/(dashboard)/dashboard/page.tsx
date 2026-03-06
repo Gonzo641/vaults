@@ -6,7 +6,11 @@ import { CreateComponentModal } from '@/components/CreateComponentModal'
 import { PromptsGrid } from '@/components/dashboard/PromptsGrid'
 import { PromptCard } from '@/components/dashboard/PromptCard'
 import { CreatePromptModal } from '@/components/CreatePromptModal'
-import { Search, Hash, X, Code2, Sparkles } from 'lucide-react'
+import { PadsView } from '@/components/dashboard/PadsView'
+import { TodosView } from '@/components/dashboard/TodosView'
+import { SnippetsView } from '@/components/dashboard/SnippetsView'
+import { BookmarksView } from '@/components/dashboard/BookmarksView'
+import { Search, Hash, X, Code2, Sparkles, Code, Link2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function DashboardPage({
@@ -20,11 +24,27 @@ export default async function DashboardPage({
     // Data fetching based on active tab
     let components = []
     let prompts = []
+    let pads = []
+    let todos = []
+    let snippets = []
+    let bookmarks = []
 
     if (activeTab === 'components') {
         components = await getComponents(params.search)
     } else if (activeTab === 'prompts') {
         prompts = await getPrompts()
+    } else if (activeTab === 'pads') {
+        const { getPads } = await import('@/actions/pads')
+        pads = await getPads()
+    } else if (activeTab === 'todos') {
+        const { getTodos } = await import('@/actions/todos')
+        todos = await getTodos()
+    } else if (activeTab === 'snippets') {
+        const { getSnippets } = await import('@/actions/snippets')
+        snippets = await getSnippets()
+    } else if (activeTab === 'bookmarks') {
+        const { getBookmarks } = await import('@/actions/bookmarks')
+        bookmarks = await getBookmarks()
     }
 
     const filteredComponents = params.tag && activeTab === 'components'
@@ -42,7 +62,15 @@ export default async function DashboardPage({
                         <p className="text-muted-foreground mt-1 text-sm">
                             {activeTab === 'components'
                                 ? `${filteredComponents.length} component${filteredComponents.length !== 1 ? 's' : ''} saved`
-                                : `${prompts.length} prompt${prompts.length !== 1 ? 's' : ''} saved`
+                                : activeTab === 'prompts'
+                                    ? `${prompts.length} prompt${prompts.length !== 1 ? 's' : ''} saved`
+                                    : activeTab === 'pads'
+                                        ? `${pads.length} note${pads.length !== 1 ? 's' : ''} saved`
+                                        : activeTab === 'snippets'
+                                            ? `${snippets.length} snippet${snippets.length !== 1 ? 's' : ''} saved`
+                                            : activeTab === 'bookmarks'
+                                                ? `${bookmarks.length} bookmark${bookmarks.length !== 1 ? 's' : ''} saved`
+                                                : `${todos.length} task${todos.length !== 1 ? 's' : ''} saved`
                             }
                         </p>
                     </div>
@@ -68,6 +96,50 @@ export default async function DashboardPage({
                         >
                             <Sparkles className="w-4 h-4" />
                             Prompts
+                        </Link>
+                        <Link
+                            href="/dashboard?tab=pads"
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all ${activeTab === 'pads'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Pads
+                        </Link>
+                        <Link
+                            href="/dashboard?tab=todos"
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all ${activeTab === 'todos'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                            Todos
+                        </Link>
+                        <Link
+                            href="/dashboard?tab=snippets"
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all ${activeTab === 'snippets'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                        >
+                            <Code className="w-4 h-4" />
+                            Snippets
+                        </Link>
+                        <Link
+                            href="/dashboard?tab=bookmarks"
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-all ${activeTab === 'bookmarks'
+                                ? 'bg-background text-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                        >
+                            <Link2 className="w-4 h-4" />
+                            Bookmarks
                         </Link>
                     </div>
                 </div>
@@ -118,13 +190,19 @@ export default async function DashboardPage({
                         <CreateComponentModal />
                     </div>
                 ) : (
-                    <MasonryGrid>
-                        {filteredComponents.map((component: any) => (
-                            <ComponentCard key={component.id} component={component} />
-                        ))}
-                    </MasonryGrid>
+                    <div className="space-y-6">
+                        {/* Le bouton d'ajout est maintenant ici, aligné à droite ! */}
+                        <div className="flex justify-end">
+                            <CreateComponentModal />
+                        </div>
+                        <MasonryGrid>
+                            {filteredComponents.map((component: any) => (
+                                <ComponentCard key={component.id} component={component} />
+                            ))}
+                        </MasonryGrid>
+                    </div>
                 )
-            ) : (
+            ) : activeTab === 'prompts' ? (
                 prompts.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-center">
                         <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
@@ -148,6 +226,14 @@ export default async function DashboardPage({
                         </PromptsGrid>
                     </div>
                 )
+            ) : activeTab === 'pads' ? (
+                <PadsView initialPads={pads} />
+            ) : activeTab === 'snippets' ? (
+                <SnippetsView initialSnippets={snippets} />
+            ) : activeTab === 'bookmarks' ? (
+                <BookmarksView initialBookmarks={bookmarks} />
+            ) : (
+                <TodosView initialTodos={todos} />
             )}
         </div>
     )

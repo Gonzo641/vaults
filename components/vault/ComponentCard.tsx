@@ -52,13 +52,18 @@ export function ComponentCard({ component }: { component: ComponentWithTags }) {
 
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(component.code_snippet);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
+            // Pick the first non-empty file (TSX priority)
+            const files = Array.isArray(component.code_files) ? component.code_files : []
+            const firstFile = files.find((f: any) => f.code?.trim())
+            if (firstFile) {
+                await navigator.clipboard.writeText(firstFile.code)
+            }
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
         } catch (err) {
-            console.error('Failed to copy code: ', err);
+            console.error('Failed to copy code: ', err)
         }
-    };
+    }
 
     return (
         <div

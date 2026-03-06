@@ -6,6 +6,7 @@ import { compressToWebP } from '@/lib/image-compression'
 import { updateComponent } from '@/actions/components'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { CodeFilesEditor } from '@/components/CodeFilesEditor'
 
 interface EditComponentFormProps {
     component: any
@@ -206,14 +207,11 @@ export function EditComponentForm({ component, onSuccess }: EditComponentFormPro
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="code_snippet" className="text-sm font-medium">Code (React/JSX/JS/CSS)</label>
-                <textarea
-                    id="code_snippet"
-                    name="code_snippet"
-                    required
-                    defaultValue={component.code_snippet}
-                    placeholder="..."
-                    className="flex min-h-[200px] w-full rounded-md border border-input bg-muted/30 font-mono px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+                <label className="text-sm font-medium">Code Files</label>
+                <p className="text-xs text-muted-foreground">Fill in at least one tab. Previously saved code is pre-loaded.</p>
+                <CodeFilesEditor
+                    initialFiles={Array.isArray(component.code_files) ? component.code_files : []}
+                    inputName="code_files"
                 />
             </div>
 

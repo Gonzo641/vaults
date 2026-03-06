@@ -1,5 +1,3 @@
-import { getComponents } from '@/actions/components'
-import { getTags } from '@/actions/tags'
 import { LayoutShell } from './layout-shell'
 import { createClient } from '@/lib/supabase/server'
 
@@ -17,11 +15,8 @@ export default async function DashboardLayout({
         profile = data
     }
 
-    const components = await getComponents()
-    const tags = await getTags()
-
     return (
-        <LayoutShell omnibarProps={{ components, tags }} user={user} profile={profile}>
+        <LayoutShell user={user} profile={profile}>
             {children}
         </LayoutShell>
     )

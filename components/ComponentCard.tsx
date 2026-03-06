@@ -58,7 +58,12 @@ export function ComponentCard({ component }: ComponentCardProps) {
     const copyCode = (e: React.MouseEvent) => {
         e.stopPropagation()
         e.preventDefault()
-        navigator.clipboard.writeText(component.code_snippet)
+        // Pick first non-empty file to copy from the card hover
+        const files = Array.isArray(component.code_files) ? component.code_files : []
+        const firstFile = files.find((f: any) => f.code?.trim())
+        if (firstFile) {
+            navigator.clipboard.writeText(firstFile.code)
+        }
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
     }

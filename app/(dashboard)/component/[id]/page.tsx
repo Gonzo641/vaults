@@ -2,10 +2,11 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { CopyCodeButton } from '@/components/CopyCodeButton'
 import { EditComponentModal } from '@/components/EditComponentModal'
 import { DeleteComponentModal } from '@/components/DeleteComponentModal'
 import { codeToHtml } from 'shiki'
+import { CodeFilesViewer } from '@/components/CodeFilesViewer'
+import { CodeFile } from '@/types'
 
 export default async function ComponentDetailsPage({
     params,
@@ -48,10 +49,20 @@ export default async function ComponentDetailsPage({
         }
     }
 
-    const highlightedCode = await codeToHtml(component.code_snippet, {
-        lang: 'tsx',
-        theme: editorTheme as any
-    })
+    const codeFiles: CodeFile[] = Array.isArray(component.code_files) ? component.code_files : []
+
+    // Map language IDs to Shiki-compatible language identifiers
+    const langMap: Record<string, string> = { tsx: 'tsx', html: 'html', css: 'css', js: 'javascript' }
+
+    // Highlight all code files in parallel on the server
+    const highlightedFiles: Record<string, string> = {}
+    await Promise.all(
+        codeFiles.map(async (file) => {
+            const lang = langMap[file.language] ?? 'text'
+            const html = await codeToHtml(file.code || '', { lang, theme: editorTheme as any })
+            highlightedFiles[file.language] = html
+        })
+    )
 
     return (
         <div className="space-y-8 max-w-5xl mx-auto">
@@ -131,20 +142,10 @@ export default async function ComponentDetailsPage({
                         </div>
                     </div>
 
-                    <div className="flex flex-col flex-1 min-h-[400px]">
-                        <div className="flex items-center justify-between shrink-0 mb-2">
-                            <h3 className="text-sm font-medium">Code Snippet</h3>
-                            <CopyCodeButton code={component.code_snippet} />
-                        </div>
-                        <div className="relative flex-1 rounded-xl border border-border bg-[#1a1b26] overflow-hidden">
-                            <div className="absolute inset-0 overflow-auto">
-                                <div
-                                    className="[&>pre]:!bg-transparent [&>pre]:p-4 [&>pre]:text-sm [&>pre]:font-mono [&>pre]:m-0 [&>pre]:w-max [&>pre]:min-w-full min-h-full"
-                                    dangerouslySetInnerHTML={{ __html: highlightedCode }}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <CodeFilesViewer
+                        codeFiles={codeFiles}
+                        highlightedFiles={highlightedFiles}
+                    />
                 </div>
             </div>
         </div>

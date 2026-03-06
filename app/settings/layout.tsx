@@ -1,7 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getComponents } from '@/actions/components'
-import { getTags } from '@/actions/tags'
 import { LayoutShell } from '@/app/(dashboard)/layout-shell'
 import { SettingsNav } from '@/components/SettingsNav'
 import { SettingsHeader } from '@/components/SettingsHeader'
@@ -21,11 +19,8 @@ export default async function SettingsLayout({
     }
 
     // Reuse the dashboard layout shell for consistency
-    const components = await getComponents()
-    const tags = await getTags()
-
     return (
-        <LayoutShell omnibarProps={{ components, tags }} user={user}>
+        <LayoutShell user={user}>
             <div className="max-w-4xl mx-auto py-6">
                 <div className="mb-6">
                     <Link

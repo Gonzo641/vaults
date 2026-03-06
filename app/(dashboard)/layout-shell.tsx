@@ -1,12 +1,10 @@
 'use client'
 
 import * as React from 'react'
-
-import { CreateComponentModal } from '@/components/CreateComponentModal'
 import { UserNav } from '@/components/UserNav'
 import Link from 'next/link'
 
-export function LayoutShell({ children, omnibarProps, user, profile }: { children: React.ReactNode, omnibarProps: { components: any[], tags: any[] }, user: any, profile?: any }) {
+export function LayoutShell({ children, user, profile }: { children: React.ReactNode, user: any, profile?: any }) {
     const { Omnibar } = require('@/components/Omnibar')
 
     return (
@@ -19,8 +17,7 @@ export function LayoutShell({ children, omnibarProps, user, profile }: { childre
                     <span>Component Vault</span>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <Omnibar {...omnibarProps} />
-                    <CreateComponentModal />
+                    <Omnibar />
                     <UserNav user={user} profile={profile} />
                 </div>
             </header>
