@@ -6,6 +6,7 @@ import { Snippet } from '@/types'
 import { toast } from 'sonner'
 import { Plus, Trash2, Save, Code, Loader2, Copy, Check, FileCode2 } from 'lucide-react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 
 const LANGUAGES = [
     { id: 'typescript', label: 'TypeScript' },
@@ -102,23 +103,19 @@ export function SnippetsView({ initialSnippets }: { initialSnippets: Snippet[] }
         })
     }
 
-    const handleDeleteSnippet = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation()
-        if (!confirm('Are you sure you want to delete this snippet?')) return
-
-        startTransition(async () => {
-            try {
-                await deleteSnippet(id)
-                setSnippets(prev => prev.filter(s => s.id !== id))
-                if (selectedSnippet?.id === id) {
-                    setSelectedSnippet(null)
-                    router.push('/dashboard?tab=snippets')
-                }
-                toast.success('Snippet deleted')
-            } catch (error: any) {
-                toast.error(error.message || 'Failed to delete snippet')
+    const handleDeleteSnippet = async (id: string) => {
+        try {
+            await deleteSnippet(id)
+            setSnippets(prev => prev.filter(s => s.id !== id))
+            if (selectedSnippet?.id === id) {
+                setSelectedSnippet(null)
+                router.push('/dashboard?tab=snippets')
             }
-        })
+            toast.success('Snippet deleted')
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete snippet')
+            throw error
+        }
     }
 
     const onCopy = () => {
@@ -185,12 +182,11 @@ export function SnippetsView({ initialSnippets }: { initialSnippets: Snippet[] }
                                         </span>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={(e) => handleDeleteSnippet(snippet.id, e)}
-                                    className="p-1.5 opacity-50 hover:opacity-100 hover:text-destructive hover:bg-destructive/10 rounded-md transition-all shrink-0"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                                <ConfirmDeleteModal
+                                    title="Delete Snippet"
+                                    description={`Are you sure you want to delete "${snippet.title}"?`}
+                                    onConfirm={() => handleDeleteSnippet(snippet.id)}
+                                />
                             </div>
                         ))
                     )}

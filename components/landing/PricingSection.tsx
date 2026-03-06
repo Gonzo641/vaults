@@ -72,7 +72,7 @@ export async function PricingSection() {
                     Pricing
                 </h2>
                 <p className="text-blue-100/60 max-w-2xl mx-auto mb-16 text-lg">
-                    Simple, straightforward pricing to keep your UI multiverse running smoothly.
+                    Simple, transparent pricing to power your ultimate developer workspace.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
@@ -91,8 +91,10 @@ export async function PricingSection() {
                         </div>
 
                         <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Up to 15 components</li>
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Basic Omnibar search</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Up to 15 Components & Prompts</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> 10 Snippets & Bookmarks</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Basic Pads & Todos</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Global Search</li>
                         </ul>
 
                         {renderButton(hitchhikerProps, "w-full mt-auto py-3 px-4 rounded-xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors")}
@@ -104,7 +106,7 @@ export async function PricingSection() {
                             <span className="text-6xl font-black italic">01</span>
                         </div>
                         <h3 className="text-xl font-semibold text-white text-left mb-2">Explorer Pass</h3>
-                        <p className="text-white/50 text-left text-sm mb-6">Perfect for short-term missions and prototypes.</p>
+                        <p className="text-white/50 text-left text-sm mb-6">Perfect for developers who need a unified daily workspace.</p>
 
                         <div className="flex items-baseline gap-2 mb-8">
                             <span className="text-5xl font-bold text-white">4.99€</span>
@@ -112,9 +114,11 @@ export async function PricingSection() {
                         </div>
 
                         <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Unlimited Components</li>
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Generous Cloud Storage (500MB)</li>
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Omnibar Search</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Unlimited Components & Prompts</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Native Multi-Language Editor</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Unlimited Workspace (Snippets, Pads, Todos)</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> 500MB Cloud Storage</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Full Command Palette (Omnibar)</li>
                         </ul>
 
                         {renderButton(explorerProps, "w-full mt-auto py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors")}
@@ -131,7 +135,7 @@ export async function PricingSection() {
                         </div>
 
                         <h3 className="text-xl font-semibold text-white text-left mb-2 mt-4">Commander License</h3>
-                        <p className="text-white/50 text-left text-sm mb-6">The ideal setup for establishing your UI orbit.</p>
+                        <p className="text-white/50 text-left text-sm mb-6">The ultimate setup for establishing your UI orbit.</p>
 
                         <div className="flex items-baseline gap-2 mb-8">
                             <span className="text-5xl font-bold text-white">11.99€</span>
@@ -141,8 +145,8 @@ export async function PricingSection() {
                         <ul className="flex flex-col gap-3 text-left mb-8 flex-grow">
                             <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Everything in Explorer</li>
                             <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Massive 2GB Cloud Storage</li>
+                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Premium Shiki Editor Themes</li>
                             <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Priority Support</li>
-                            <li className="flex items-center gap-3 text-sm text-white/80"><Check className="w-4 h-4 text-indigo-400" /> Custom Editor Themes</li>
                         </ul>
 
                         {renderButton(commanderProps, "w-full mt-auto py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all hover:shadow-[0_0_20px_-5px_rgba(99,102,241,0.5)]")}

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Rocket, ArrowRight, ShieldCheck, Zap, Layers } from 'lucide-react'
+import { Rocket, ArrowRight, ShieldCheck, Terminal, Code2 } from 'lucide-react'
 import { gsap } from 'gsap'
 import { CosmicJourney } from '@/components/landing/CosmicJourney'
 
@@ -67,11 +67,11 @@ export function HeroSection({ isLoggedIn }: { isLoggedIn?: boolean }) {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[900px] h-[300px] bg-gradient-to-r from-blue-500/30 via-cyan-400/30 to-transparent blur-[100px] rounded-full -rotate-12 pointer-events-none" />
 
             <h1 ref={titleRef} className="text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/40 max-w-4xl drop-shadow-sm">
-                Elevate your components to the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">cosmos.</span>
+                Elevate your entire development workflow to the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">cosmos.</span>
             </h1>
 
             <p ref={subtitleRef} className="mt-6 text-lg md:text-xl text-blue-100/70 max-w-2xl font-light">
-                The ultimate vault to store, organize, and retrieve your components and AI prompts. Featuring drag-and-drop uploads and stellar organization.
+                More than just a component vault. The ultimate developer workspace to store multi-language components, manage AI prompts, track tasks, and organize your code snippets in one unified universe.
             </p>
 
             <div ref={buttonsRef} className="mt-10 flex flex-col sm:flex-row gap-4 items-center">
@@ -101,26 +101,26 @@ export function HeroSection({ isLoggedIn }: { isLoggedIn?: boolean }) {
 
                 <div className="flex flex-col items-center p-6 bg-white/[0.03] border border-white/10 rounded-2xl backdrop-blur-md shadow-2xl h-full">
                     <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 mb-4">
-                        <Zap className="w-6 h-6 text-blue-400" />
+                        <Terminal className="w-6 h-6 text-blue-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Lightspeed Uploads</h3>
-                    <p className="text-sm text-center text-white/50">Instant uploads. Your images are automatically optimized in the background for zero loading time.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Universal Omnibar</h3>
+                    <p className="text-sm text-center text-white/50">Navigate your entire multiverse. Instantly search components, switch to your daily todos, or pull up a saved prompt with a single keystroke (⌘K).</p>
                 </div>
 
                 <div className="flex flex-col items-center p-6 bg-white/[0.03] border border-white/10 rounded-2xl backdrop-blur-md shadow-2xl h-full mt-4 md:mt-0">
                     <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 mb-4">
-                        <Layers className="w-6 h-6 text-indigo-400" />
+                        <Code2 className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Infinite Organization</h3>
-                    <p className="text-sm text-center text-white/50">Tag, search, and filter through your UI multiverse using our powerful Omnibar system.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Native Multi-Language</h3>
+                    <p className="text-sm text-center text-white/50">Write code the way you want. Our advanced editor supports React, TSX, HTML, CSS, and Vanilla JS with gorgeous Shiki syntax highlighting.</p>
                 </div>
 
                 <div className="flex flex-col items-center p-6 bg-white/[0.03] border border-white/10 rounded-2xl backdrop-blur-md shadow-2xl h-full mt-4 md:mt-0">
                     <div className="p-3 bg-violet-500/10 rounded-xl border border-violet-500/20 mb-4">
                         <ShieldCheck className="w-6 h-6 text-violet-400" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Secure Orbit</h3>
-                    <p className="text-sm text-center text-white/50">100% Private. Your component code is completely isolated, encrypted, and accessible only by you.</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Secure Workspace Orbit</h3>
+                    <p className="text-sm text-center text-white/50">100% Private. Your entire workflow from UI components to private project notes and bookmarks is completely isolated, encrypted, and accessible only by you.</p>
                 </div>
 
             </div>

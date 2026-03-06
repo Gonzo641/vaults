@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Rocket, Code2, MessageSquare, Crown } from 'lucide-react'
+import { Rocket, Code2, MessageSquare, Crown, Layers, Search } from 'lucide-react'
 
 export function CosmicJourney() {
     return (
@@ -39,7 +39,7 @@ export function CosmicJourney() {
                         <div className="w-full pl-[70px] md:pl-0 md:w-5/12 flex md:justify-end">
                             <div className="bg-white/[0.03] border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:border-indigo-500/50 w-full md:text-right relative overflow-hidden group-hover:shadow-[0_0_30px_rgba(99,102,241,0.15)]">
                                 <h3 className="text-xl font-bold text-white mb-2 flex items-center md:justify-end gap-2"><Code2 className="w-5 h-5 text-indigo-400" /> Base Camp: The Vault</h3>
-                                <p className="text-sm text-slate-300 mb-4">Store, organize, and retrieve your components with ease. Your personal codebase awaits.</p>
+                                <p className="text-sm text-slate-300 mb-4">Store, organize, and retrieve your UI components with ease. Now featuring a powerful multi-language editor for React, HTML, CSS, and Vanilla JS. Your personal codebase awaits.</p>
                                 <div className="bg-slate-900/50 rounded-lg p-4 border border-white/5 font-mono text-xs text-left text-indigo-200">
                                     {'export const Hero = () => {'}<br />
                                     {'  return <section... />'}<br />
@@ -71,7 +71,48 @@ export function CosmicJourney() {
                         </div>
                     </div>
 
-                    {/* Step 3: Commander Mode */}
+                    {/* Step 3: Orbital Station */}
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full group relative">
+                        <div className="absolute left-[30px] md:left-1/2 top-6 md:top-1/2 md:-translate-y-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] z-20">
+                            <div className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75"></div>
+                        </div>
+
+                        <div className="w-full pl-[70px] md:pl-0 md:w-5/12 flex md:justify-end">
+                            <div className="bg-white/[0.03] border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:border-emerald-500/50 w-full md:text-right relative overflow-hidden group-hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                                <h3 className="text-xl font-bold text-white mb-2 flex items-center md:justify-end gap-2"><Layers className="w-5 h-5 text-emerald-400" /> Orbital Station: The Workspace</h3>
+                                <p className="text-sm text-slate-300 mb-4">Don't just store code, manage your whole mission. Track tasks with Kanban Todos, write docs in Pads, save resources in Bookmarks, and keep your daily Snippets one click away.</p>
+                                <div className="bg-slate-900/50 rounded-lg p-4 border border-white/5 font-mono text-xs text-left text-emerald-200 flex items-center gap-3">
+                                    <div className="w-4 h-4 rounded-full border-2 border-emerald-400/50 shrink-0"></div>
+                                    <span className="opacity-80 line-through text-emerald-300/60">Deploy auth service</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="hidden md:block md:w-2/12"></div>
+                        <div className="hidden md:block md:w-5/12"></div>
+                    </div>
+
+                    {/* Step 4: The Command Center */}
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full group relative">
+                        <div className="absolute left-[30px] md:left-1/2 top-6 md:top-1/2 md:-translate-y-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4 rounded-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.8)] z-20">
+                            <div className="absolute inset-0 rounded-full bg-cyan-400 animate-ping opacity-75"></div>
+                        </div>
+
+                        <div className="hidden md:block md:w-5/12"></div>
+                        <div className="hidden md:block md:w-2/12"></div>
+
+                        <div className="w-full pl-[70px] md:pl-0 md:w-5/12 flex md:justify-start">
+                            <div className="bg-white/[0.03] border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-2xl transition-transform duration-300 group-hover:scale-105 group-hover:border-cyan-500/50 w-full text-left relative overflow-hidden group-hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+                                <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Search className="w-5 h-5 text-cyan-400" /> The Command Center: Omnibar</h3>
+                                <p className="text-sm text-slate-300 mb-4">Maps your universe at lightspeed. Instantly jump between your components, prompts, and notes using our global Command Palette with deep-linking. Hit ⌘K and launch.</p>
+                                <div className="bg-slate-900/50 rounded-lg p-3 border border-white/5 flex items-center justify-between text-cyan-200 border-cyan-500/30">
+                                    <span className="text-sm opacity-80">Search universe...</span>
+                                    <span className="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded border border-white/10 font-mono">⌘K</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Step 5: Final Destination */}
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full group relative">
                         <div className="absolute left-[30px] md:left-1/2 top-6 md:top-1/2 md:-translate-y-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4 rounded-full bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.8)] z-20">
                             <div className="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-75"></div>
@@ -81,7 +122,7 @@ export function CosmicJourney() {
                             <div className="bg-white/[0.03] border border-amber-500/30 p-6 rounded-2xl backdrop-blur-md shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(245,158,11,0.3)] group-hover:border-amber-400/60 w-full md:text-right relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
                                 <h3 className="text-xl font-bold text-amber-50 mb-2 flex items-center md:justify-end gap-2 relative z-10"><Crown className="w-5 h-5 text-amber-400 shrink-0" /> Final Destination: Upgrade</h3>
-                                <p className="text-sm text-amber-100/70 mb-4 relative z-10 w-full">Unlock premium Shiki themes, unlimited component and prompt storage. Take control of your universe.</p>
+                                <p className="text-sm text-amber-100/70 mb-4 relative z-10 w-full">Unlock premium Shiki themes, unlimited storage across your entire workspace, and advanced productivity tools. Take control of your universe.</p>
                                 <div className="flex items-center md:justify-end gap-2 text-xs font-semibold text-amber-300 uppercase tracking-wider mt-4">
                                     <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Access Granted
                                 </div>

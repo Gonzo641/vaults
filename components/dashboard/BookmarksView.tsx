@@ -8,6 +8,7 @@ import { useTransition } from 'react'
 import { CreateBookmarkModal } from '@/components/CreateBookmarkModal'
 import { EditBookmarkModal } from '@/components/EditBookmarkModal'
 import { MasonryGrid } from '@/components/MasonryGrid'
+import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 
 export function BookmarksView({ initialBookmarks }: { initialBookmarks: Bookmark[] }) {
     if (initialBookmarks.length === 0) {
@@ -42,20 +43,14 @@ export function BookmarksView({ initialBookmarks }: { initialBookmarks: Bookmark
 function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
     const [isPending, startTransition] = useTransition()
 
-    const handleDelete = (e: React.MouseEvent) => {
-        e.preventDefault() // prevent navigating
-        e.stopPropagation()
-
-        if (!confirm('Are you sure you want to delete this bookmark?')) return
-
-        startTransition(async () => {
-            try {
-                await deleteBookmark(bookmark.id)
-                toast.success('Bookmark deleted')
-            } catch (error: any) {
-                toast.error(error.message || 'Failed to delete bookmark')
-            }
-        })
+    const handleDelete = async () => {
+        try {
+            await deleteBookmark(bookmark.id)
+            toast.success('Bookmark deleted')
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete bookmark')
+            throw error // Throw to let Modal catch it
+        }
     }
 
     return (
@@ -98,14 +93,22 @@ function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
 
                     <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                         <EditBookmarkModal bookmark={bookmark} />
-                        <button
-                            onClick={handleDelete}
-                            disabled={isPending}
-                            className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-                            title="Delete Bookmark"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                            <ConfirmDeleteModal
+                                title="Delete Bookmark"
+                                description={`Are you sure you want to delete the bookmark for "${bookmark.title}"?`}
+                                onConfirm={handleDelete}
+                                trigger={
+                                    <button
+                                        type="button"
+                                        className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
+                                        title="Delete"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                }
+                            />
+                        </div>
                     </div>
                 </div>
 

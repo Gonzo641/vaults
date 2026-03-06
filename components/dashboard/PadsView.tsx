@@ -6,6 +6,7 @@ import { Pad } from '@/types'
 import { toast } from 'sonner'
 import { Plus, Trash2, Save, FileText, Loader2, Edit3 } from 'lucide-react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
 
 export function PadsView({ initialPads }: { initialPads: Pad[] }) {
     const searchParams = useSearchParams()
@@ -85,23 +86,19 @@ export function PadsView({ initialPads }: { initialPads: Pad[] }) {
         })
     }
 
-    const handleDeletePad = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation()
-        if (!confirm('Are you sure you want to delete this note?')) return
-
-        startTransition(async () => {
-            try {
-                await deletePad(id)
-                setPads(prev => prev.filter(p => p.id !== id))
-                if (selectedPad?.id === id) {
-                    setSelectedPad(null)
-                    router.push('/dashboard?tab=pads')
-                }
-                toast.success('Pad deleted')
-            } catch (error: any) {
-                toast.error(error.message || 'Failed to delete pad')
+    const handleDeletePad = async (id: string) => {
+        try {
+            await deletePad(id)
+            setPads(prev => prev.filter(p => p.id !== id))
+            if (selectedPad?.id === id) {
+                setSelectedPad(null)
+                router.push('/dashboard?tab=pads')
             }
-        })
+            toast.success('Pad deleted')
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete pad')
+            throw error // Throw so the modal can catch and display it
+        }
     }
 
     return (
@@ -142,12 +139,11 @@ export function PadsView({ initialPads }: { initialPads: Pad[] }) {
                                     <p className="font-medium text-sm truncate">{pad.title}</p>
                                     <p className="text-xs opacity-70 truncate mt-0.5">{pad.content.slice(0, 30) || 'Empty...'}</p>
                                 </div>
-                                <button
-                                    onClick={(e) => handleDeletePad(pad.id, e)}
-                                    className="p-1.5 opacity-50 hover:opacity-100 hover:text-destructive hover:bg-destructive/10 rounded-md transition-all shrink-0"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
+                                <ConfirmDeleteModal
+                                    title="Delete Note"
+                                    description={`Are you sure you want to delete "${pad.title}"?`}
+                                    onConfirm={() => handleDeletePad(pad.id)}
+                                />
                             </div>
                         ))
                     )}

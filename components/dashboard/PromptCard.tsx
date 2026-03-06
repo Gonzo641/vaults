@@ -1,11 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { Copy, Check, Hash, Sparkles } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { Copy, Check, Hash, Sparkles, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { deletePrompt } from '@/actions/prompts'
+import { ConfirmDeleteModal } from '@/components/ConfirmDeleteModal'
+import { EditPromptModal } from '@/components/EditPromptModal'
 
 export function PromptCard({ prompt }: { prompt: any }) {
     const [copied, setCopied] = useState(false)
+    const [isDeleting, startTransition] = useTransition()
 
     const handleCopy = async () => {
         try {
@@ -15,6 +19,16 @@ export function PromptCard({ prompt }: { prompt: any }) {
             setTimeout(() => setCopied(false), 2000)
         } catch (err) {
             toast.error("Échec de la copie.")
+        }
+    }
+
+    const handleDelete = async () => {
+        try {
+            await deletePrompt(prompt.id)
+            toast.success('Prompt deleted')
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete prompt')
+            throw error // So the Modal catches it
         }
     }
 
@@ -39,8 +53,18 @@ export function PromptCard({ prompt }: { prompt: any }) {
                     <h3 className="font-semibold text-lg line-clamp-2 leading-tight flex-grow text-foreground group-hover:text-indigo-400 transition-colors">
                         {prompt.title}
                     </h3>
-                    <div className="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg shrink-0">
-                        <Sparkles className="w-4 h-4" />
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <EditPromptModal prompt={prompt} />
+                        <ConfirmDeleteModal
+                            title="Delete Prompt"
+                            description={`Are you sure you want to delete "${prompt.title}"?`}
+                            onConfirm={handleDelete}
+                            trigger={
+                                <button className="p-1.5 rounded-md hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50">
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            }
+                        />
                     </div>
                 </div>
 
